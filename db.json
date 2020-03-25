@@ -1,0 +1,16 @@
+{
+  "meetings": [
+    {
+      "id": 1,
+      "title": "JavaScript Fortgeschritten"
+    }
+  ],
+  "attendees": [
+    {
+      "id": 1,
+      "name": "Michael Alt",
+      "email": "mail@michael-alt.info",
+      "meetingId": 1
+    }
+  ]
+}

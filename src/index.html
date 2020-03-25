@@ -3,45 +3,125 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Thema: Beipiel</title>
+  <title>Web API: Fetch API</title>
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/themes/prism.min.css" integrity="sha256-cuvic28gVvjQIo3Q4hnRpQSNB0aMw3C+kjkR0i+hrWg=" crossorigin="anonymous" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/plugins/line-numbers/prism-line-numbers.min.css" integrity="sha256-Afz2ZJtXw+OuaPX10lZHY7fN1+FuTE/KdCs+j7WZTGc=" crossorigin="anonymous" />
 </head>
-<body class="line-numbers">
+<body>
 <header>
-  <h1>Thema</h1>
+  <h1>Web API</h1>
 </header>
 <main>
-  <h2>Beispiel</h2>
+  <h2>Fetch API</h2>
   <details>
-    <summary>Ein Hinweis</summary>
-    Optional kann an dieser Stelle ein kleiner Hinweis zu diesem Beispiel stehen.
-    Zum Beispiel die Notwendigkeit, einen lokalen Server zu starten:
-    <pre><code class="language-shell">npx lite-server --baseDir=src</code></pre>
+    <summary>Hinweis Beispiel Server</summary>
+    Die Fetch API lässt sich aus Sicherheits-Gründen nicht über das File-Protokoll anwenden,
+    sondern muss über das Http-Protokoll gestartet werden. Da ich im Beispiel zusätzlich noch
+    einen einfachen JSON-Server einsetze, muss das Beispiel gestartet werden über:
+    <pre><code class="language-shell">npm start</code></pre>
+    Falls man zum Testen ein Live-Reloading bei Änderungen haben möchte, kann stattdessen einen
+    Browsersync Proxy zusätzlich starten mit:
+    <pre><code class="language-shell">npm run dev</code></pre>
   </details>
   <p>
-    Hier steht das Demo-Markup des Beispiels mit Links zu Spezifikation
-    und weiteren Ressourcen sowie einigen erklärenden Zeilen - und oft der
-    Hinweis die Entwickler-Tools im Browser (F12) zu öffnen.
+    Als moderne und bequemere Variante des XMLHttpRequest-Objekts präsentiert sich die Fetch API.
+    Die Kernkomponenten des Http-Protokolls sind in Interfaces abstrahiert und die API setzt auf Grund
+    der asynchronen Natur des Http-Requests auf ECMAScript Promises.
   </p>
   <article class="links">
     <h3>Links</h3>
     <ul>
-      <li><a href="https://www.w3.org/" target="_blank">W3C</a></li>
-      <li><a href="https://whatwg.org/" target="_blank">WHATWG Living Standard</a></li>
-      <li><a href="https://developer.mozilla.org/" target="_blank">Mozilla Developer Network (MDN)</a></li>
+      <li><a href="https://fetch.spec.whatwg.org/" target="_blank">WHATWG Living Standard</a></li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API" target="_blank">Mozilla Developer Network (MDN)</a></li>
     </ul>
   </article>
+  <h3>Anwendung</h3>
   <p>
-    Zusätzlich kann ich grundlegende erste Code-Zeilen präsentieren:
+    Laden von JSON Daten von einem Remote Endpoint:
   </p>
-  <pre data-file="sample.js" class="line-numbers"><code class="language-js">
-    // Beispiel
+  <pre class="line-numbers"><code class="language-js">
+    fetch('/meetings')
+      .then( response => {
+        if (response.status !== 200) {
+          console.log('Looks like there was a problem. Status Code: ' +
+            response.status);
+          return;
+        }
 
-    let sample = 'Template';
-    console.log(sample);
+        response.json().then( data => {
+          console.log(data);
+        });
+      }
+    )
+    .catch(function(err) {
+      console.log('Fetch Error :-S', err);
+    });
   </code></pre>
+  <p>
+    Oder etwas kürzer ohne weitere Fehlerbehandlung:
+  </p>
+  <pre class="line-numbers"><code class="language-js">
+    fetch('/attendees')
+      .then( response => response.json() )
+      .then( data => console.log(data) );
+  </code></pre>
+  <p>
+    Und ein Beispiel mit async/await:
+  </p>
+  <pre class="line-numbers"><code class="language-js">
+    async function logAttendees() {
+      const response = await fetch('/attendees');
+      const attendees = await response.json();
+      console.log(attendees);
+    }
+  </code></pre>
+  <p>Senden von JSON-Daten sieht wie folgt aus:</p>
+  <pre class="line-numbers"><code class="language-js">
+    fetch('/attendees', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ name: 'Gabi Delgado', email: 'gabi@delgado.de', meetingId: 1})
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log('Success:', data);
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+  </code></pre>
+  <p>Und ein DELETE-Request zum Abschluss:</p>
+  <pre class="line-numbers"><code class="language-js">
+    fetch('/attendees/2', { method: 'DELETE' })
+    .then((response) => {
+      console.log('Success:', response.status);
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+  </code></pre>
+  <h3>Beispiel</h3>
+  <article class="sample">
+    <h4 id="meeting">Meeting: <span></span></h4>
+    Teilnehmer:
+    <input id="name" type="text" placeholder="Name">
+    <input id="email" type="text" placeholder="Email">
+    <button id="btnAdd">Hinzufügen</button>
+    <table>
+      <thead>
+        <tr>
+          <th>Nr</th>
+          <th>Name</th>
+          <th>Email</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+  </article>
 </main>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/prism.min.js" integrity="sha256-YZQM6/hLBZYkb01VYf17isoQM4qpaOP+aX96hhYrWhg=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/plugins/line-numbers/prism-line-numbers.min.js" integrity="sha256-hep5s8952MqR7Y79JYfCXZD6vQjVHs7sOu/ZGrs1OEQ=" crossorigin="anonymous"></script>

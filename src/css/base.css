@@ -5,10 +5,8 @@ body {
   color: #555;
 }
 
-h1,
-h2,
-h3,
-strong, b {
+h1, h2, h3, h4,
+strong, b, th {
   color: #333;
   font-weight: 600;
 }
@@ -66,3 +64,35 @@ article.links {
   article.links h3 {
     margin-top: 0;
   }
+
+article.sample {
+  padding: 1em;
+  border: 1px solid #81E6D9;
+}
+
+input[type='text'] {
+  margin-left: 1em;
+  padding: 4px;
+}
+
+button {
+  background-color: white;
+  color: #333;
+  font-weight: 500;
+  border: 1px solid #888;
+  border-radius: 2px;
+  padding: 4px 8px;
+  margin: 0 1em;
+}
+button:hover {
+  background-color: #eee;
+}
+
+table {
+  margin-top: 1em;
+  width: 100%;
+}
+
+tr {
+  text-align: center;
+}
